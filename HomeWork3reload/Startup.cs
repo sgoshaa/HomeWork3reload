@@ -10,6 +10,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using HomeWork3reload.Application;
+using HomeWork3reload.Services;
+using HomeWork3reload.Infrastructure;
 
 namespace HomeWork3reload
 {
@@ -26,6 +29,10 @@ namespace HomeWork3reload
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            services.AddScoped<GetUsersInfoRequestHandler>();
+            services.AddScoped<IUserInfoService, UserInfoService>();
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
