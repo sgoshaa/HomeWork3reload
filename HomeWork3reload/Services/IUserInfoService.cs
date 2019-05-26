@@ -9,5 +9,6 @@ namespace HomeWork3reload.Services
     public interface IUserInfoService
     {
         Task<User> GetById(Guid id);
+        void AppendUser(User user);
     }
 }
