@@ -22,12 +22,6 @@ namespace HomeWork3reload.Controllers
             _appendUsersRequestHandler = appendUsersRequestHandler;
         }
 
-       /*public UsersController(AppendUsersRequestHandler appendUsersRequestHandler)
-        {
-            _appendUsersRequestHandler = appendUsersRequestHandler;
-        }*/
-
-
         [HttpGet("{id}")]
         public Task<User> GetUserInfo(Guid id)
         {
