@@ -6,6 +6,7 @@ using HomeWork3reload.Models;
 using HomeWork3reload.Services;
 using Npgsql;
 using Dapper;
+using Microsoft.AspNetCore.Mvc;
 
 namespace HomeWork3reload.Infrastructure
 {
@@ -24,13 +25,15 @@ namespace HomeWork3reload.Infrastructure
              }
          }
 
-        public async void AppendUser(User user)
+        public async Task<IActionResult>AppendUser(User user)
         {
-            using (var connection = new NpgsqlConnection(ConnectionString)) //@email, @nickname, @phone
+            using (var connection = new NpgsqlConnection(ConnectionString))
             {
                 string query = "INSERT INTO users (id, email, nickname, phone) VALUES (@id,@email, @nickname, @phone)";
 
                 await connection.ExecuteAsync(query, user);
+
+                return new OkResult();
             }
         }
 

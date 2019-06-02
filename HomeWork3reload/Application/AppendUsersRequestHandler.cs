@@ -4,21 +4,32 @@ using System.Linq;
 using System.Threading.Tasks;
 using HomeWork3reload.Services;
 using HomeWork3reload.Models;
+using MassTransit;
+using HomeWork3reload.Commands;
 
 namespace HomeWork3reload.Application
 {
     public class AppendUsersRequestHandler
     {
-        private readonly IUserInfoService _userInfoServive;
+        //private readonly IUserInfoService _userInfoServive;
+        private readonly IBus _bus;
 
-        public AppendUsersRequestHandler(IUserInfoService userInfoServive)
+        public AppendUsersRequestHandler(IBus bus)
         {
-            _userInfoServive = userInfoServive;
+            _bus = bus;
         }
 
-        public void Handle(User user)
+        public Task<User>Handle(User user)
         {
-            _userInfoServive.AppendUser(user);
+            Guid guid = Guid.NewGuid();
+            user.Id = guid;
+
+            _bus.Send(new AppendUserCommand()
+            {
+                User = user
+            });
+
+            return Task.FromResult<User>(user);
         }
     }
 }

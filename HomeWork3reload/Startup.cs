@@ -14,6 +14,13 @@ using HomeWork3reload.Application;
 using HomeWork3reload.Services;
 using HomeWork3reload.Infrastructure;
 
+using MassTransit;
+
+using HomeWork3reload.Commands;
+using HomeWork3reload.Consumers;
+using Microsoft.Extensions.Hosting;
+using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
+
 namespace HomeWork3reload
 {
     public class Startup
@@ -33,7 +40,27 @@ namespace HomeWork3reload
             services.AddScoped<GetUsersInfoRequestHandler>();
             services.AddScoped<AppendUsersRequestHandler>();
             services.AddScoped<IUserInfoService, UserInfoService>();
-            
+
+            // Обработчики событий MassTransit
+            services.AddScoped<AppendUserConsumer>();
+
+            services.AddMassTransit(x =>
+            {
+                x.AddConsumer<AppendUserConsumer>();
+                x.AddBus(provider =>Bus.Factory.CreateUsingInMemory(cfg =>
+                {
+                    cfg.ReceiveEndpoint("append-user-queue", ep =>
+                    {
+                        ep.ConfigureConsumer<AppendUserConsumer>(provider);
+                        EndpointConvention.Map<AppendUserCommand>(ep.InputAddress);
+                    });
+                }));
+
+                x.AddRequestClient<AppendUserCommand>();
+            });
+
+            services.AddSingleton<IHostedService, BusService>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
